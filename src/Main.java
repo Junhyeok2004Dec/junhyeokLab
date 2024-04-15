@@ -10,6 +10,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 class MorseCodeKeyer extends JFrame {
+
+
+	private boolean isPlaying = false;
+	private SourceDataLine line;
+
+
+
 	private JTextArea textArea;
 	private JButton playButton;
 
@@ -136,4 +143,52 @@ class MorseCodeKeyer extends JFrame {
 			keyer.setVisible(true);
 		});
 	}
+
+
+
+	private void startContinuousSound() {
+		isPlaying = true;
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					AudioFormat format = new AudioFormat(44100, 8, 1, true, false);
+					DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
+					line = (SourceDataLine) AudioSystem.getLine(info);
+
+					line.open(format);
+					line.start();
+
+					int frequency = 900;
+					int duration = 1000; // in milliseconds
+
+					while (isPlaying) {
+						int bufferSize = 44100 * duration / 1000;
+						byte[] buffer = new byte[bufferSize];
+
+						for (int i = 0; i < bufferSize; i++) {
+							double angle = 2.0 * Math.PI * frequency * i / 44100;
+							buffer[i] = (byte) (Math.sin(angle) * 127.0);
+						}
+
+						line.write(buffer, 0, buffer.length);
+						line.drain();
+					}
+				} catch (LineUnavailableException e) {
+					e.printStackTrace();
+				} finally {
+					stopContinuousSound();
+				}
+			}
+		}).start();
+	}
+
+	private void stopContinuousSound() {
+		if (line != null) {
+			line.stop();
+			line.close();
+			isPlaying = false;
+		}
+	}
+
 }
