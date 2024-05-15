@@ -47,7 +47,7 @@ public class WorkerSystem_2
 		inputPanel.add(responsibilityField);
 
 		// Button to add new row to the JTable
-		JButton addButton = new JButton("Add Entry");
+		JButton addButton = new JButton("추가");
 		addButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
