@@ -22,3 +22,27 @@ int main() {
 
     return 0;
 }
+
+
+
+int main() {
+    // Sample hex string
+    std::string sampleHexString = "00312491040948ff3fb0123a007f";
+
+    // Parse the hex string into a vector of uint8_t
+    std::vector<uint8_t> samplePacket = parseHexString(sampleHexString);
+
+    // Create an instance of Packet
+    Packet myPacket(samplePacket);
+
+    // Print the entire packet
+    myPacket.printPacket();
+
+    // Retrieve elements from index 2 to 6 (0-based index)
+    std::string element = myPacket.getElement(2, 6);
+
+    // Print the retrieved elements in hex
+    std::cout << element << std::endl;
+
+    return 0;
+}
